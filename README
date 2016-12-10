@@ -1,0 +1,4 @@
+To run this app you need to put rxtx lib as explained in zip in lib directory.
+
+Then to run app (jar) open cmd/terminal and type:
+java -jar jar_name -Djava.library.path="<path_to_rxtxSerial.dll>"
