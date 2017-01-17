@@ -30,14 +30,18 @@ public class SerialPortCommunicationHandler implements AutoCloseable {
         initializeIOStreams();
     }
 
+    public SerialPortCommunicationHandler(CommPortIdentifier  commPortIdentifier) throws IOException,
+            TooManyListenersException, PortInUseException, UnsupportedCommOperationException {
+
+        initializeSerialPort(commPortIdentifier);
+        initializeIOStreams();
+    }
 
     private void initializeSerialPort(CommPortIdentifier commPort) throws PortInUseException,
             UnsupportedCommOperationException, IOException, TooManyListenersException {
 
         serialPort = (SerialPort) commPort.open(APP_NAME, MAX_WAIT_TIME);
         serialPort.setSerialPortParams(BAUD_RATE, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-
-//        addSerialPortEventListener();
     }
 
     private void initializeIOStreams() throws IOException {
@@ -87,6 +91,23 @@ public class SerialPortCommunicationHandler implements AutoCloseable {
         }
 
         throw new PortNotFoundException("Port not found: " + name);
+    }
+
+    public static List<CommPortIdentifier> getActiveCommPortsList() {
+        List <CommPortIdentifier> commPortIdentifiers = new ArrayList<>();
+
+        Enumeration commPorts = CommPortIdentifier.getPortIdentifiers();
+
+        while (commPorts.hasMoreElements()) {
+            CommPortIdentifier commPortIdentifier = (CommPortIdentifier) commPorts.nextElement();
+
+            if (CommPortIdentifier.PORT_SERIAL == commPortIdentifier.getPortType()) {
+
+                commPortIdentifiers.add(commPortIdentifier);
+            }
+        }
+
+        return commPortIdentifiers;
     }
 
     public static List<String> getActivePortNames() {
