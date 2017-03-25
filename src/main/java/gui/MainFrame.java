@@ -29,8 +29,8 @@ public class MainFrame extends JFrame implements ActionListener {
 
     private MainFrame(String serialPortName) throws Exception {
         super("Visca serial port controller");
-        attachWindowListener();
-        portCommHandler = new SerialPortCommunicationHandler(serialPortName);
+//        attachWindowListener();
+//        portCommHandler = new SerialPortCommunicationHandler(serialPortName);
 
         JPanel toolsPanel = new JPanel(new BorderLayout());
         JPanel navButtonPanel = createNavButtonPanel();
@@ -41,10 +41,20 @@ public class MainFrame extends JFrame implements ActionListener {
 
         JScrollPane scrollPane = createCameraResponsesScrollPaneWithList();
 
+        //TODO
+        JPanel cmdPanel = new JPanel(new BorderLayout());
+
+        JPanel cmdDownPanel = new JPanel(new BorderLayout());
+        cmdDownPanel.add(new JTextField());
+        cmdDownPanel.add(new JButton("Send"), BorderLayout.EAST);
+
+        cmdPanel.add(scrollPane);
+        cmdPanel.add(cmdDownPanel, BorderLayout.SOUTH);
+
         JPanel contentPane = new JPanel(new GridLayout(1, 2));
         contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        contentPane.add(scrollPane);
+        contentPane.add(cmdPanel);
         contentPane.add(toolsPanel);
 
         add(contentPane);

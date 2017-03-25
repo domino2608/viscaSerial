@@ -22,11 +22,11 @@ public class Main {
     public static void main(String[] args) throws Exception {
 //        copyRequiredDllToJREBin();
 
-//        SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
 //            String selection = GuiDialogsUtils.showSerialPortChoosingDialog();
-//
-//            MainFrame.createFrame(selection);
-//        });
+
+            MainFrame.createFrame("");
+        });
 
         Server server = new Server("localhost", 9000);
         server.listenAndHandleConections();
