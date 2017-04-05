@@ -32,7 +32,7 @@ public abstract class CameraCommandUtil {
 
     public static final int[] MOVE_DOWN_RIGHT = {0x81, 0x01, 0x06, 0x01, 0x01, 0x01, 0x02, 0x02, 0xff};
 
-    public static int[] getaCommandCopyWithChangedSpeed(int[] command, int panSpeed, int tiltSpeed) {
+    public static int[] getCommandCopyWithChangedSpeed(int[] command, int panSpeed, int tiltSpeed) {
         int[] commandCopy = command.clone();
 
         commandCopy[PAN_SPEED_INDEX] = panSpeed;

@@ -14,6 +14,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -29,8 +30,8 @@ public class MainFrame extends JFrame implements ActionListener {
 
     private MainFrame(String serialPortName) throws Exception {
         super("Visca serial port controller");
-//        attachWindowListener();
-//        portCommHandler = new SerialPortCommunicationHandler(serialPortName);
+        attachWindowListener();
+        portCommHandler = new SerialPortCommunicationHandler(serialPortName);
 
         JPanel toolsPanel = new JPanel(new BorderLayout());
         JPanel navButtonPanel = createNavButtonPanel();
@@ -39,17 +40,7 @@ public class MainFrame extends JFrame implements ActionListener {
         toolsPanel.add(navButtonPanel);
         toolsPanel.add(downNavPanel, BorderLayout.SOUTH);
 
-        JScrollPane scrollPane = createCameraResponsesScrollPaneWithList();
-
-        //TODO
-        JPanel cmdPanel = new JPanel(new BorderLayout());
-
-        JPanel cmdDownPanel = new JPanel(new BorderLayout());
-        cmdDownPanel.add(new JTextField());
-        cmdDownPanel.add(new JButton("Send"), BorderLayout.EAST);
-
-        cmdPanel.add(scrollPane);
-        cmdPanel.add(cmdDownPanel, BorderLayout.SOUTH);
+        JPanel cmdPanel = createCmdResponsesPanel();
 
         JPanel contentPane = new JPanel(new GridLayout(1, 2));
         contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -180,6 +171,51 @@ public class MainFrame extends JFrame implements ActionListener {
         return navButtonPanel;
     }
 
+    private JPanel createCmdResponsesPanel() {
+        JPanel cmdPanel = new JPanel(new BorderLayout());
+
+        JScrollPane scrollPane = createCameraResponsesScrollPaneWithList();
+
+        JTextField cmdJTextField = new JTextField();
+        JButton sendButton = new JButton("Send");
+        sendButton.addActionListener(e -> {
+            String text = cmdJTextField.getText();
+            String[] commands = text.split(" ");
+
+            ArrayList<Integer> cmdList = new ArrayList<>();
+
+            for (String cmd : commands) {
+                try {
+                    cmdList.add(Integer.decode("0x" + cmd));
+
+                } catch (NumberFormatException ex) {
+                    appendTextToResponseList("Wrong input!");
+                    return;
+                }
+            }
+
+            int[] arr = new int[cmdList.size()];
+            for (int i = 0; i < cmdList.size(); i++) {
+                arr[i] = cmdList.get(i);
+            }
+
+            appendTextToResponseList("Sending: " + text);
+            String response = sendCommandToSerialPort(arr);
+
+            appendTextToResponseList(response);
+            cmdJTextField.setText("");
+        });
+
+        JPanel cmdDownPanel = new JPanel(new BorderLayout());
+        cmdDownPanel.add(cmdJTextField);
+        cmdDownPanel.add(sendButton, BorderLayout.EAST);
+
+        cmdPanel.add(scrollPane);
+        cmdPanel.add(cmdDownPanel, BorderLayout.SOUTH);
+
+        return cmdPanel;
+    }
+
     private void attachWindowListener() {
         addWindowListener(new WindowAdapter() {
             @Override
@@ -215,56 +251,56 @@ public class MainFrame extends JFrame implements ActionListener {
 
         switch (sourceBtn.getText()) {
             case ButtonLabels.UP_LEFT:
-                command = CameraCommandUtil.getaCommandCopyWithChangedSpeed(
+                command = CameraCommandUtil.getCommandCopyWithChangedSpeed(
                         CameraCommandUtil.MOVE_UP_LEFT, panSpeed, tiltSpeed);
 
                 response = sendCommandToSerialPort(command);
                 break;
 
             case ButtonLabels.UP:
-                command = CameraCommandUtil.getaCommandCopyWithChangedSpeed(
+                command = CameraCommandUtil.getCommandCopyWithChangedSpeed(
                         CameraCommandUtil.MOVE_UP, panSpeed, tiltSpeed);
 
                 response = sendCommandToSerialPort(command);
                 break;
 
             case ButtonLabels.UP_RIGHT:
-                command = CameraCommandUtil.getaCommandCopyWithChangedSpeed(
+                command = CameraCommandUtil.getCommandCopyWithChangedSpeed(
                         CameraCommandUtil.MOVE_UP_RIGHT, panSpeed, tiltSpeed);
 
                 response = sendCommandToSerialPort(command);
                 break;
 
             case ButtonLabels.LEFT:
-                command = CameraCommandUtil.getaCommandCopyWithChangedSpeed(
+                command = CameraCommandUtil.getCommandCopyWithChangedSpeed(
                         CameraCommandUtil.MOVE_LEFT, panSpeed, tiltSpeed);
 
                 response = sendCommandToSerialPort(command);
                 break;
 
             case ButtonLabels.RIGHT:
-                command = CameraCommandUtil.getaCommandCopyWithChangedSpeed(
+                command = CameraCommandUtil.getCommandCopyWithChangedSpeed(
                         CameraCommandUtil.MOVE_RIGHT, panSpeed, tiltSpeed);
 
                 response = sendCommandToSerialPort(command);
                 break;
 
             case ButtonLabels.DOWN_LEFT:
-                command = CameraCommandUtil.getaCommandCopyWithChangedSpeed(
+                command = CameraCommandUtil.getCommandCopyWithChangedSpeed(
                         CameraCommandUtil.MOVE_DOWN_LEFT, panSpeed, tiltSpeed);
 
                 response = sendCommandToSerialPort(command);
                 break;
 
             case ButtonLabels.DOWN:
-                command = CameraCommandUtil.getaCommandCopyWithChangedSpeed(
+                command = CameraCommandUtil.getCommandCopyWithChangedSpeed(
                         CameraCommandUtil.MOVE_DOWN, panSpeed, tiltSpeed);
 
                 response = sendCommandToSerialPort(command);
                 break;
 
             case ButtonLabels.DOWN_RIGHT:
-                command = CameraCommandUtil.getaCommandCopyWithChangedSpeed(
+                command = CameraCommandUtil.getCommandCopyWithChangedSpeed(
                         CameraCommandUtil.MOVE_DOWN_RIGHT, panSpeed, tiltSpeed);
 
                 response = sendCommandToSerialPort(command);
@@ -283,10 +319,10 @@ public class MainFrame extends JFrame implements ActionListener {
                 break;
         }
 
-        appendResponseToResponseList(response);
+        appendTextToResponseList(response);
     }
 
-    private void appendResponseToResponseList(String response) {
+    private void appendTextToResponseList(String response) {
         String currentDateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yy hh:mm:ss"));
 
         listModel.addElement("[ " + currentDateString + " ]    " + response + "\n");

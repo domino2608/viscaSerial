@@ -21,7 +21,7 @@ public class Server {
         serverSocket.bind(new InetSocketAddress(host, port));
     }
 
-    public void listenAndHandleConections() throws IOException {
+    public void listenAndHandleConnections() throws Exception {
         boolean isRunning = true;
 
         while (isRunning) {

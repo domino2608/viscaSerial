@@ -18,9 +18,19 @@ public class ConnectionHandler implements Closeable {
     private BufferedReader reader;
     private PrintWriter writer;
 
-    SerialPortCommunicationHandler serialPortCommunicationHandler;
+    private static SerialPortCommunicationHandler serialPortCommunicationHandler;
 
-    public ConnectionHandler(Socket sck) throws IOException {
+    static {
+
+        try {
+            serialPortCommunicationHandler =
+                    new SerialPortCommunicationHandler(SerialPortCommunicationHandler.getActiveCommPortsList().get(0));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ConnectionHandler(Socket sck) throws Exception {
         this.sck = sck;
 
         initStreams();
@@ -31,22 +41,35 @@ public class ConnectionHandler implements Closeable {
         writer = new PrintWriter(new OutputStreamWriter(sck.getOutputStream()), true);
     }
 
-    private void initSerialPortCommunictionHandler() throws PortInUseException,
-            UnsupportedCommOperationException, TooManyListenersException, IOException {
-
-        serialPortCommunicationHandler =
-                new SerialPortCommunicationHandler(SerialPortCommunicationHandler.getActiveCommPortsList().get(0));
-    }
-
-    public void handleCommunication () throws IOException {
+    public void handleCommunication() throws IOException {
         String cmd = reader.readLine();
         System.out.println("Got command: " + cmd);
 
+        String response = null;
+
         switch (cmd) {
             case "right":
-                serialPortCommunicationHandler.sendCommandAndGetResponse(CameraCommandUtil.MOVE_RIGHT);
+                response = serialPortCommunicationHandler.sendCommandAndGetResponse(
+                        CameraCommandUtil.getCommandCopyWithChangedSpeed(CameraCommandUtil.MOVE_RIGHT, 7, 7));
+                break;
+            case "left":
+                response = serialPortCommunicationHandler.sendCommandAndGetResponse(
+                        CameraCommandUtil.getCommandCopyWithChangedSpeed(CameraCommandUtil.MOVE_LEFT, 7, 7));
+                break;
+            case "up":
+                response = serialPortCommunicationHandler.sendCommandAndGetResponse(
+                        CameraCommandUtil.getCommandCopyWithChangedSpeed(CameraCommandUtil.MOVE_UP, 7, 7));
+                break;
+            case "down":
+                response = serialPortCommunicationHandler.sendCommandAndGetResponse(
+                        CameraCommandUtil.getCommandCopyWithChangedSpeed(CameraCommandUtil.MOVE_DOWN, 7, 7));
+                break;
+            case "stop":
+                response = serialPortCommunicationHandler.sendCommandAndGetResponse(CameraCommandUtil.STOP);
                 break;
         }
+
+        System.out.println(response);
 
     }
 

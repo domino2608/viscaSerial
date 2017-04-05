@@ -22,14 +22,14 @@ public class Main {
     public static void main(String[] args) throws Exception {
 //        copyRequiredDllToJREBin();
 
-        SwingUtilities.invokeLater(() -> {
+//        SwingUtilities.invokeLater(() -> {
 //            String selection = GuiDialogsUtils.showSerialPortChoosingDialog();
-
-            MainFrame.createFrame("");
-        });
-
-        Server server = new Server("localhost", 9000);
-        server.listenAndHandleConections();
+//
+//            MainFrame.createFrame(selection);
+//        });
+//
+        Server server = new Server("192.168.1.105", 9000);
+        server.listenAndHandleConnections();
     }
 
     public static void copyRequiredDllToJREBin() throws IOException {
@@ -37,7 +37,7 @@ public class Main {
 
         String javaHome = System.getProperty("java.home");
 
-        if (javaHome == null) {
+            if (javaHome == null) {
             return;
         }
 
