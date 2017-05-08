@@ -39,7 +39,6 @@ public class SerialPortCommunicationHandler implements AutoCloseable {
 
     private void initializeSerialPort(CommPortIdentifier commPort) throws PortInUseException,
             UnsupportedCommOperationException, IOException, TooManyListenersException {
-
         serialPort = (SerialPort) commPort.open(APP_NAME, MAX_WAIT_TIME);
         serialPort.setSerialPortParams(BAUD_RATE, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
     }
@@ -48,12 +47,6 @@ public class SerialPortCommunicationHandler implements AutoCloseable {
         inputStream = serialPort.getInputStream();
         outputStream = serialPort.getOutputStream();
     }
-
-//    private void addSerialPortEventListener() throws TooManyListenersException {
-//        serialPort.addEventListener(this);
-//        serialPort.notifyOnDataAvailable(true);
-//        serialPort.notifyOnOutputEmpty(true);
-//    }
 
     public String sendCommandAndGetResponse(int[] command) throws IOException {
         for (int b : command) {

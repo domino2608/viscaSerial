@@ -69,6 +69,20 @@ public class ConnectionHandler implements Closeable {
                 break;
         }
 
+        if (cmd.startsWith("POS: ")) {
+            String xChange = cmd.substring(cmd.indexOf('x') + 2, cmd.indexOf(';'));
+            String yChange = cmd.substring(cmd.indexOf('y') + 2);
+
+            int x = (int) (10 * Double.parseDouble(xChange));
+            int y = (int) (10 * Double.parseDouble(yChange));
+
+            System.out.println("x=" + x);
+            System.out.println("y=" + y);
+
+            // TODO
+            response = serialPortCommunicationHandler.sendCommandAndGetResponse(CameraCommandUtil.ABSOLUTE_POSITION);
+        }
+
         System.out.println(response);
 
     }

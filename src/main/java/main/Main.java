@@ -27,8 +27,8 @@ public class Main {
 //
 //            MainFrame.createFrame(selection);
 //        });
-//
-        Server server = new Server("192.168.1.105", 9000);
+
+        Server server = new Server("localhost", 9000);
         server.listenAndHandleConnections();
     }
 
