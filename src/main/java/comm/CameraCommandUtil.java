@@ -7,18 +7,37 @@ import java.util.Arrays;
  */
 public abstract class CameraCommandUtil {
 
+    public static final int HORIZONTAL_CHANGE = 144;
+
+    public static final int VERTICAL_CHANGE = 60;
+
+
+    public static final int POSITIVE_START = 0; //hex = 0000
+
+    public static final int NEGATIVE_START = 65535; //hex = FFFF
+
+
     public static final int PAN_SPEED_INDEX = 4;
+
     public static final int TILT_SPEED_INDEX = 5;
 
     public static final int POSITION_PAN_1_INDEX = 6;
+
     public static final int POSITION_PAN_2_INDEX = 7;
+
     public static final int POSITION_PAN_3_INDEX = 8;
+
     public static final int POSITION_PAN_4_INDEX = 9;
 
+
     public static final int POSITION_TILT_1_INDEX = 10;
+
     public static final int POSITION_TILT_2_INDEX = 11;
+
     public static final int POSITION_TILT_3_INDEX = 12;
+
     public static final int POSITION_TILT_4_INDEX = 13;
+
 
     public static final int[] CLEAR_BUFFER = {0x88, 0x01, 0x00, 0x01, 0xff};
 

@@ -1,5 +1,6 @@
 package server;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -8,7 +9,7 @@ import java.net.Socket;
 /**
  * Created by Dominik C.
  */
-public class Server {
+public class Server implements Closeable {
 
     private ServerSocket serverSocket;
 
@@ -21,17 +22,32 @@ public class Server {
         serverSocket.bind(new InetSocketAddress(host, port));
     }
 
-    public void listenAndHandleConnections() throws Exception {
+    public void listenAndHandleConnections() throws IOException {
         boolean isRunning = true;
 
         while (isRunning) {
             Socket sckSocket = serverSocket.accept();
 
-            ConnectionHandler connectionHandler = new ConnectionHandler(sckSocket);
-            connectionHandler.handleCommunication();
+            ConnectionHandler connectionHandler = null;
+            try {
+                connectionHandler = new ConnectionHandler(sckSocket);
+                connectionHandler.handleCommunication();
+                connectionHandler.close();
+            } catch (Exception e) {
+                e.printStackTrace();
 
-            connectionHandler.close();
+                if (connectionHandler != null) {
+                    connectionHandler.close();
+                }
+            }
+
         }
     }
 
+    @Override
+    public void close() throws IOException {
+        if (serverSocket != null) {
+            serverSocket.close();
+        }
+    }
 }

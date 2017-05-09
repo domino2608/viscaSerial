@@ -6,10 +6,7 @@ import gnu.io.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.TooManyListenersException;
+import java.util.*;
 
 /**
  * Created by Domino on 2016-12-10.
@@ -49,6 +46,8 @@ public class SerialPortCommunicationHandler implements AutoCloseable {
     }
 
     public String sendCommandAndGetResponse(int[] command) throws IOException {
+        showCommand(command);
+
         for (int b : command) {
             outputStream.write(b);
         }
@@ -56,6 +55,10 @@ public class SerialPortCommunicationHandler implements AutoCloseable {
         outputStream.flush();
 
         return getResponse();
+    }
+
+    private void showCommand(int[] command) {
+        System.out.println("sending: " + Arrays.toString(command));
     }
 
     private String getResponse() throws IOException {

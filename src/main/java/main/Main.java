@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
 //        copyRequiredDllToJREBin();
 
 //        SwingUtilities.invokeLater(() -> {
@@ -28,8 +28,14 @@ public class Main {
 //            MainFrame.createFrame(selection);
 //        });
 
-        Server server = new Server("localhost", 9000);
-        server.listenAndHandleConnections();
+        Server server = null;
+        try {
+            server = new Server("localhost", 9000);
+            server.listenAndHandleConnections();
+        } catch (Exception e) {
+            e.printStackTrace();
+            server.close();
+        }
     }
 
     public static void copyRequiredDllToJREBin() throws IOException {
